@@ -1,0 +1,162 @@
+<style lang="scss" type="text/scss">
+	@import "../../common/styles/variables.scss";
+	@import "../../common/styles/common.scss";
+
+	page{
+		background: #fafafa;
+		@include colBox();
+		@include colMidBox();
+	}
+
+	.modal{
+		position: absolute;
+		top: 390rpx;
+		left: 112rpx;
+		width: 530rpx;
+		height: 300rpx;
+		border-radius: 8rpx;
+		background: #fff;
+
+		&-input{
+			width: 100%;
+			height: 212rpx;
+
+			input{
+				padding-left: 16rpx;
+				border-bottom: 4rpx solid $blue;
+			}
+		}
+
+		&-btns{
+			width: 100%;
+			height: 90rpx;
+		}
+
+		&-sure{
+			width: 50%;
+			height: 100%;
+			text-align: center;
+			color: #394AE6;
+			font-size: 36rpx;
+			border-top: 2rpx solid #DCDDE6;
+			padding-top: 20rpx;
+		}
+
+		&-cancel{
+			width: 50%;
+			height: 100%;
+			text-align: center;
+			color: #818399;
+			font-size: 36rpx;
+			border-top: 2rpx solid #DCDDE6;
+			border-left: 2rpx solid #DCDDE6;
+			padding-top: 20rpx;
+		}
+	}
+
+	.mask{
+		position: absolute;
+		width: 750rpx;
+		background: rgba(0, 0, 0, 0.5);
+	}
+</style>
+
+<template>
+	<repeat for='{{list}}' item='item'>
+		<slider :item='item' @sliderClick.user='jumpToList'></slider>
+	</repeat>
+
+	<btn title="创建一个新的人脉圈" width='624' height='80' radius='8' color='bottom-blue' @btnClick.user='createGroup'></btn>
+
+	<view class="mask l-rowAllMid" style="height: {{windowHeight}}rpx; display: {{showMask}};">
+		<view class="modal l-col">
+			<view class="modal-input l-rowAllMid">
+				<input placeholder="填写名字" placeholder-style='color: #818399; font-size: 32rpx;' bindblur='getInput'/>
+			</view>
+			<view class="modal-btns l-row">
+				<view class="modal-cancel" @tap='cancelCreate'>取消</view>
+				<view class="modal-sure" @tap='sureCreate'>创建</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	import page from '../base/basicPage'
+	import Slider from '../../components/Card/Slider'
+	import Button from '../../components/Button/Button'
+
+	export default class Groups extends page {
+		config = {
+			navigationBarTitleText: '我的人脉圈'
+		}
+
+		components = {
+			slider: Slider,
+			btn: Button
+		}
+
+		data = {
+			list: [
+				{
+					src: '../../static/images/contacts/friends.png',
+					title: '朋友圈',
+					num: '473'
+				}, {
+					src: '../../static/images/contacts/communicators.png',
+					title: '帮我传播问题的人',
+					num: '473'
+				}, {
+					src: '../../static/images/contacts/helper.png',
+					title: '帮我回答问题的人',
+					num: '473'
+				}, {
+					src: '../../static/images/contacts/avatar.jpg',
+					title: '西电瑞思',
+					num: '1222'
+				}
+			],
+			windowHeight: '',
+			groupName: '',
+			showMask: 'none'
+		}
+
+		methods = {
+			jumpToList (e) {
+				wx.navigateTo({
+					url: './list'
+				})
+			},
+			createGroup (e) {
+				this.showMask = 'block';
+			},
+			getInput (e) {
+				this.groupName = e.detail.value.toString();
+			},
+			cancelCreate (e) {
+				this.showMask = 'none';
+			},
+			sureCreate (e) {
+				if (this.groupName !== '') {
+					this.list.push({
+						src: '',
+						title: this.groupName,
+						num: '1'
+					})
+				}
+
+				this.showMask = 'none'
+			}
+		}
+
+		onLoad () {
+			console.log('groups');
+
+			wx.getSystemInfo({
+				success: (res) => {
+					this.windowHeight = res.windowHeight * 2;
+				}
+			})
+		}
+	}
+</script>

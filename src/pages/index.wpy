@@ -1,0 +1,45 @@
+<style lang="scss" type="text/scss">
+</style>
+
+<template>
+	<button open-type="getUserInfo" bindgetuserinfo="GetInfo" size="default">2333</button>
+</template>
+
+<script>
+	import page from './base/basicPage'
+
+	export default class Index extends page {
+		data = {
+			login: {
+				code: '',
+				encryptedData: '',
+				iv: ''
+			}
+		}
+
+		onLoad () {
+			this.$WX.wxLogin()
+			.then(res => {
+				this.login.code = res.code;
+				return this.$WX.wxGetUserInfo();
+			})
+			.then(res => {
+				this.login.encryptedData = res.encryptedData;
+				this.login.iv = res.iv;
+				return this.$API('login', this.login);
+			})
+			.then(res => {
+				console.log(res);
+			})
+
+			// this.$API('getInterface', {userId: 1})
+			// .then(res => {
+			// 	console.log(res)
+			// })
+		}
+
+		GetInfo (e) {
+			console.log(e.detail.userInfo)
+		}
+	}
+</script>

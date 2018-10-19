@@ -1,0 +1,76 @@
+<style lang="scss" type="text/scss">
+    @import "../../common/styles/variables.scss";
+    @import "../../common/styles/mixins.scss";
+    @import "../../common/styles/common.scss";
+
+    .basic-slider{
+        width: 750rpx;
+        height: 120rpx;
+        background: #fff;
+        margin-bottom: 8rpx;
+        padding-left: 32rpx;
+        padding-right: 20rpx;
+    }
+
+    .slider{
+        &-avatar{
+            width: 48rpx;
+            height: 48rpx;
+            border-radius: 24rpx;
+            background-color: #CAD1FF;
+
+            image{
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+            }
+        }
+        &-title{
+            width: 450rpx;
+            color: #41424D;
+            margin-left: 30rpx;
+            overflow: hidden;
+        }
+        &-num{
+            width: 126rpx;
+            color: #818399;
+            margin-right: 8rpx;
+        }
+        &-next{
+            width: 36rpx;
+            height: 36rpx;
+        }
+    }
+</style>
+
+<template>
+    <view class="basic-slider l-rowVerMid" @tap='sliderClick'>
+        <view class="slider-avatar">
+            <image src='{{item.src}}'></image>            
+        </view>
+        <p class="slider-title">{{item.title}}</p>
+        <p class="slider-num">{{item.num}}人</p>
+        <image src="../../static/images/contacts/next.png" class="slider-next"></image>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    
+    /*
+     * {props}: src: 图片链接/title: 标题/num: 人数
+     */
+	export default class Slider extends wepy.component {     
+        methods = {
+            sliderClick(e) {
+                this.$emit('sliderClick', e)
+            }
+        }
+
+        props = {
+            item: {
+                type: Object
+            }
+        }
+	}
+</script>

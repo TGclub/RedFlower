@@ -1,0 +1,53 @@
+/* 提供各种常用的盒子模型 */
+
+/* 盒子排列mixin */
+
+// 横向容器
+@mixin rowBox() {
+	display: flex;
+	flex-flow: row;
+}
+
+// 竖向容器
+@mixin colBox() {
+	display: flex;
+	flex-flow: column;
+}
+
+// 水平垂直均居中容器
+@mixin allMidBox() {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+// 水平居中容器
+@mixin rowMidBox() {
+	display: flex;
+	justify-content: center;
+}
+
+// 垂直居中容器
+@mixin colMidBox() {
+	display: flex;
+	align-items: center;
+}
+
+/* 快速设置样式 */
+
+// 设置盒子圆角
+@mixin radius($radius) {
+	border-radius: $radius;
+}
+
+// 设置盒子宽高
+@mixin wh($wide, $high) {
+	width: $wide;
+	height: $high;
+}
+
+// 设置字体颜色、大小
+@mixin font($color, $size) {
+	color: $color;
+	font-size: $size;
+}

@@ -1,0 +1,17 @@
+<style lang="scss" type="text/scss">
+
+</style>
+
+<template>
+	<view></view>
+</template>
+
+<script>
+	import page from './base/basicPage'
+
+	export default class Index extends page {
+		onLoad () {
+			console.log('community')
+		}
+	}
+</script>

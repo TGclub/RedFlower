@@ -1,0 +1,72 @@
+<style lang="scss" type="text/scss">
+    @import "../../common/styles/variables.scss";
+    @import "../../common/styles/mixins.scss";
+
+    .basic-btn{
+        @include allMidBox();
+    }
+
+    .blue{
+        background-color: $blue;
+        @include font($white, $fontSize_huge);
+    }
+
+    .bottom-blue{
+        position: fixed;
+        bottom: 46rpx;
+        background-color: $blue;
+        @include font($white, $fontSize_huge);
+    }
+
+    .white-border{
+        border: 1rpx solid $blue;
+        background-color: $white;
+        @include font($blue, $fontSize_huge);
+    }
+</style>
+
+<template>
+    <div class='basic-btn {{color}}'
+        style='width: {{width}}rpx; height: {{height}}rpx; border-radius: {{radius}}rpx'
+        @tap='btnClick'>
+        <p style="font-size: 36rpx;">{{title}}</p>
+    </div>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    
+    /*
+     * {props}: title: 文字内容/height 高度/width 宽度/color 风格/radius 圆角
+     */
+	export default class Button extends wepy.component {        
+        methods = {
+            btnClick (e) {
+                this.$emit('btnClick', e)
+            }
+        }
+
+        props = {
+            title: {
+                type: String,
+                default: 'title'
+            },
+            height: {
+                type: String,
+                default: '90'
+            },
+            width: {
+                type: String,
+                default: '320'
+            },
+            color: {
+                typt: String,
+                default: 'blue'
+            },
+            radius: {
+                type: String,
+                default: '44'
+            }
+        }
+	}
+</script>

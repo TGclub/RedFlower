@@ -1,0 +1,51 @@
+<style lang="scss" type="text/scss">
+    @import "../../common/styles/variables.scss";
+
+    .basic-avatar{
+        position: absolute;
+        background: $lightGrey;
+        border-radius: 50%;
+        transition: all 1s;
+        overflow: hidden;
+    }
+
+    .basic-avatar image{
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+<template>
+    <view class='basic-avatar' id='{{info.id}}' @tap='avaClick' style="width: {{info.size}}rpx; height: {{info.size}}rpx; top: {{info.top}}rpx; left: {{info.left}}rpx; opacity: {{opacity}}; display: {{display}};">
+        <image src="{{info.src}}"></image>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    
+    /*
+     * {props}: {src: 图片链接/size: 头像大小/top: 位置/left: 位置/id: 用于注明在头像网络中的位置} /opacity: 透明度/display: 显示
+     */
+	export default class Avatar extends wepy.component {
+        props = {
+            info: {
+                type: Object
+            },
+            opacity: {
+                type: String,
+                default: '1'
+            },
+            display: {
+                type: String,
+                default: 'block'
+            }
+        }
+
+        methods = {
+            avaClick (e) {
+                this.$emit('avaClick', e);
+            }
+        }
+	}
+</script>
