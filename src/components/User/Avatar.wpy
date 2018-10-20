@@ -16,7 +16,7 @@
 </style>
 
 <template>
-    <view class='basic-avatar' id='{{info.id}}' @tap='avaClick' style="width: {{info.size}}rpx; height: {{info.size}}rpx; top: {{info.top}}rpx; left: {{info.left}}rpx; opacity: {{opacity}}; display: {{display}};">
+    <view class='basic-avatar' id='{{info.id}}' @tap='avaClick' style="width: {{info.radius * 2}}rpx; height: {{info.radius * 2}}rpx; top: {{info.y}}rpx; left: {{info.x}}rpx; opacity: {{opacity}}; display: {{display}};">
         <image src="{{info.src}}"></image>
     </view>
 </template>
@@ -25,7 +25,7 @@
     import wepy from 'wepy'
     
     /*
-     * {props}: {src: 图片链接/size: 头像大小/top: 位置/left: 位置/id: 用于注明在头像网络中的位置} /opacity: 透明度/display: 显示
+     * {props}: {src: 图片链接/radius: 头像半径/x: 位置/y: 位置/id: 用于注明在头像网络中的位置} /opacity: 透明度/display: 显示
      */
 	export default class Avatar extends wepy.component {
         props = {

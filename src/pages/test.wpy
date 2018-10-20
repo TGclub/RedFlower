@@ -2,6 +2,10 @@
 	@import "../common/styles/variables.scss";
 	@import "../common/styles/common.scss";
 
+	page{
+		overflow: visible;
+	}
+
 	.btns{
 		position: fixed;
 		bottom: 0;

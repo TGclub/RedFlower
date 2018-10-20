@@ -12,8 +12,8 @@
 		}
 		&-userhead{
 			position: absolute;
-			width: 336rpx;
-			height: 336rpx;
+			width: 340rpx;
+			height: 340rpx;
 			top: 232rpx;
 			left: 204rpx;
 			transition: opacity 1s;
@@ -44,19 +44,9 @@
             <ava :info='userhead' :opacity='userhead.opacity'></ava>
 		</view>
 
-        <!-- 人脉网显示图一 -->
-        <repeat for="{{avaList1}}" item="item" index='idx'>
-			<ava :info='item' @avaClick.user='changeUser' :opacity='avaList1opacity' :display='avaList1show'></ava>
-		</repeat>
-
-		<!-- 人脉网显示图二 -->
-		<repeat for="{{avaList2}}" item="item" index='idx'>
-			<ava :info='item' @avaClick.user='changeUser' :opacity='avaList2opacity' :display='avaList2show'></ava>
-		</repeat>
-
-		<!-- 人脉网显示图三 -->		
-		<repeat for="{{avaList3}}" item="item" index='idx'>
-			<ava :info='item' @avaClick.user='changeUser' :opacity='avaList3opacity' :display='avaList3show'></ava>
+        <!-- 人脉网显示 -->
+        <repeat for="{{avaList}}" item="item" index='idx'>
+			<ava :info='item' @avaClick.user='changeUser' :opacity='avaListopacity' :display='avaListshow'></ava>
 		</repeat>
 
         <!-- 为完成点击头像切换人脉网效果而设置的特殊模块 -->
@@ -68,7 +58,9 @@
 
 <script>
     import wepy from 'wepy'
-    import Avatar from './Avatar'
+	import Avatar from './Avatar'
+	// import API from '../../API/index'
+	// import * as WXUTIL from '../../common/scripts/wxUtil'
     
     /*
      * {props}: usersrc: 用户头像链接/ srclist: 用户好友头像链接
@@ -88,135 +80,16 @@
 		}
 
         data = {
+			// maxHigh假数据
+			maxHigh: 840,
 			userhead: {
 				src: '',
 				size: '204',
 				opacity: '1'
 			},
-			// 除用户头像外的其他头像
-			avaList1opacity: '1',
-			avaList2opacity: '0',
-			avaList3opacity: '0',
-			avaList1show: 'block',
-			avaList2show: 'none',
-			avaList3show: 'none',
-			avaList1: [
-				{
-                size: '112',
-                top: '200',
-                left: '148'
-				},{
-					size: '112',
-					top: '168',
-					left: '472'
-				},{
-					size: '112',
-					top: '520',
-					left: '160'
-				},{
-					size: '112',
-					top: '520',
-					left: '480'
-				},{
-					size: '64',
-					top: '104',
-					left: '344'
-				},{
-					size: '64',
-					top: '400',
-					left: '48'
-				},{
-					size: '64',
-					top: '400',
-					left: '642'
-				},{
-					size: '64',
-					top: '718',
-					left: '208'
-				},{
-					size: '64',
-					top: '718',
-					left: '480'
-				}
-			],
-			avaList2: [
-				{
-					size: '112',
-					top: '112',
-					left: '320'
-				},{
-					size: '112',
-					top: '346',
-					left: '92'
-				},{
-					size: '112',
-					top: '354',
-					left: '540'
-				},{
-					size: '112',
-					top: '580',
-					left: '320'
-				},{
-					size: '64',
-					top: '166',
-					left: '72'
-				},{
-					size: '64',
-					top: '168',
-					left: '608'
-				},{
-					size: '64',
-					top: '600',
-					left: '104'
-				},{
-					size: '64',
-					top: '614',
-					left: '560'
-				},{
-					size: '64',
-					top: '770',
-					left: '344'
-				}
-			],
-			avaList3: [
-				{
-					size: '112',
-					top: '160',
-					left: '440'
-				},{
-					size: '112',
-					top: '320',
-					left: '110'
-				},{
-					size: '112',
-					top: '400',
-					left: '520'
-				},{
-					size: '112',
-					top: '540',
-					left: '220'
-				},{
-					size: '64',
-					top: '54',
-					left: '376'
-				},{
-					size: '64',
-					top: '140',
-					left: '140'
-				},{
-					size: '64',
-					top: '652',
-					left: '96'
-				},{
-					size: '64',
-					top: '620',
-					left: '530'
-				},{
-					size: '64',
-					top: '730',
-					left: '380'
-				}
-			],
+			avaListopacity: 1,
+			avaListshow: 'block',
+			avaList: [],
 			transport: {
 				show: '',
 				src: '',
@@ -361,17 +234,119 @@
 		}
 
 		onLoad () {
-			console.log(this)
-			console.log(this.usersrc)
+			// 获取窗口高度
+			// console.log($WX.getSystemInfo())
 
 			this.userhead.src = this.usersrc;
 
-			// 只需初始化第一个列表即可
-			this.avaList1.forEach((val, idx) => {
-				val.display = this.avaList1show;
-				val.opacity = this.avaList1opacity;
+			/**
+			* @desc 生成随机点
+			* @param w {number} 画布宽度
+			* @param h {number} 画布高度
+			* @return {object} 随机点坐标
+			*/
+			const _randomPoint = (w = 750, h) => {
+				const x = parseInt(w * Math.random());
+				const y = parseInt(h * Math.random());
+
+				return {x: x, y: y};
+			}
+
+			/**
+			* @desc 碰撞检测
+			* @param pointA {object} A目标坐标、半径
+			* @param pointB {object} B目标坐标、半径
+			* @return {boolean} 是否重叠
+			*/
+			const _isOverlay = (pointA, pointB) => {
+				const xGap = pointA.x - pointB.x;
+				const yGap = pointA.y - pointB.y;
+				const rGap = Math.abs(pointA.radius + pointB.radius);
+				const distance = Math.sqrt(xGap * xGap + yGap * yGap);
+
+				if (rGap < distance) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+
+			/**
+			* @desc 合法性检测
+			* @param point {object} 目标坐标、半径
+			* @param h {number}	画布高度
+			* @param posList {array} 已有位置列表
+			* @return {boolean} 是否合法
+			*/
+			const _isValid = (point, h, posList = {}) => {
+				const x = point.x;
+				const y = point.y;
+				const radius = point.radius
+
+				// x值不符合要求
+				// 神秘数字750：微信小程序定义的屏幕宽度
+				if (x <= radius || x >= (750 - radius)) return false;
+				// y值不符合要求
+				if (y <= radius || y >= (h - radius)) return false;
+				// x、y组合不符合要求
+				// 神秘数字195\545：方框范围公式的化简
+				// 神秘数字170：方框宽度的一半
+				if (x > (195 - radius) && x < (545 + radius) && y > (h / 2 - 170 - radius) && y < (h / 2 + 170 + radius)) return false;
+				// x、y组合和已有位置发生碰撞
+				for(let i = 0; i < posList.length; i++) {
+					if (_isOverlay(point, posList[i])) {
+						continue;
+					} else {
+						return false;
+					}
+				}
+
+				// 检查完成
+				return true;
+			}
+
+			/**
+			* @desc 生成随机点列表
+			* @param h {number} 画布高度
+			* @return {array} 随机位置列表
+			*/
+			const _randomPositions = (h) => {
+				let pointList = [];
+				let miniCounter = 0;
+				let hugeCounter = 0;
+
+				while(miniCounter < 4) {
+					let point = _randomPoint(750, h);
+					
+					point.radius = 32;
+
+					if(_isValid(point, h, pointList)) {
+						miniCounter++;
+						pointList.push(point);
+					}
+				}
+
+				while(hugeCounter < 5) {
+					let point = _randomPoint(750, h);
+					
+					point.radius = 55;
+
+					if(_isValid(point, h, pointList)) {
+						hugeCounter++;
+						pointList.push(point);
+					}
+				}
+
+				return pointList;
+			}
+
+			this.avaList = _randomPositions(840);
+
+			console.log(this.avaList)
+
+			this.avaList.forEach((val, idx) => {
 				val.src = this.srclist[idx];
-				val.id = 'avaList1' + idx;
+				val.id = 'avaList' + idx;
 			})
 
 			this.$apply();

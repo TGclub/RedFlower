@@ -43,6 +43,10 @@ const wxGetUserInfo = () => {
     return _configFn(wx.getUserInfo);
 }
 
+const getSystemInfo = () => {
+    return _configFn(wx.getSystemInfo);
+}
+
 /**
  * 跳转
  * @param url {String} 跳转相对路径
@@ -70,6 +74,7 @@ export {
     ajax, // 发起ajax请求
     wxLogin, // 登录
     wxGetUserInfo, // 获取用户信息
+    getSystemInfo, // 获取系统信息
     jumpTo, // page跳转
     toast // 显示消息提示框
 }
