@@ -238,6 +238,15 @@
 			// console.log($WX.getSystemInfo())
 
 			this.userhead.src = this.usersrc;
+			/**
+			* @desc 生成[-1, 1]之间的随机值
+			* @return {number} 随机值
+			*/
+			const _rnum = () => {
+				const flag = Math.random()
+				const rnum = flag > 0.5 ? Math.random() : -Math.random();
+				return rnum;
+			}
 
 			/**
 			* @desc 生成随机点
@@ -245,9 +254,9 @@
 			* @param h {number} 画布高度
 			* @return {object} 随机点坐标
 			*/
-			const _randomPoint = (w = 750, h) => {
-				const x = parseInt(w * Math.random());
-				const y = parseInt(h * Math.random());
+			const _rollSeed = () => {
+				const x = parseInt(315 * Math.random());
+				const y = parseInt(60 * Math.random() + 60);
 
 				return {x: x, y: y};
 			}
@@ -259,12 +268,11 @@
 			* @return {boolean} 是否重叠
 			*/
 			const _isOverlay = (pointA, pointB) => {
-				const xGap = pointA.x - pointB.x;
-				const yGap = pointA.y - pointB.y;
-				const rGap = Math.abs(pointA.radius + pointB.radius);
-				const distance = Math.sqrt(xGap * xGap + yGap * yGap);
+				const xGap = Math.abs(pointA.x - pointB.x);
+				const yGap = Math.abs(pointA.y - pointB.y);
+				const maxDiameter = 120;
 
-				if (rGap < distance) {
+				if (xGap > maxDiameter && yGap > maxDiameter) {
 					return true;
 				} else {
 					return false;
@@ -274,24 +282,14 @@
 			/**
 			* @desc 合法性检测
 			* @param point {object} 目标坐标、半径
-			* @param h {number}	画布高度
 			* @param posList {array} 已有位置列表
 			* @return {boolean} 是否合法
 			*/
-			const _isValid = (point, h, posList = {}) => {
+			const _isValid = (point, posList = []) => {
 				const x = point.x;
 				const y = point.y;
 				const radius = point.radius
 
-				// x值不符合要求
-				// 神秘数字750：微信小程序定义的屏幕宽度
-				if (x <= radius || x >= (750 - radius)) return false;
-				// y值不符合要求
-				if (y <= radius || y >= (h - radius)) return false;
-				// x、y组合不符合要求
-				// 神秘数字195\545：方框范围公式的化简
-				// 神秘数字170：方框宽度的一半
-				if (x > (195 - radius) && x < (545 + radius) && y > (h / 2 - 170 - radius) && y < (h / 2 + 170 + radius)) return false;
 				// x、y组合和已有位置发生碰撞
 				for(let i = 0; i < posList.length; i++) {
 					if (_isOverlay(point, posList[i])) {
@@ -304,50 +302,80 @@
 				// 检查完成
 				return true;
 			}
-
+			
 			/**
-			* @desc 生成随机点列表
-			* @param h {number} 画布高度
-			* @return {array} 随机位置列表
+			* @desc 生成合法位置列表
+			* @param seed {object} 种子坐标
+			* @return {array} 合法位置列表
 			*/
-			const _randomPositions = (h) => {
-				let pointList = [];
-				let miniCounter = 0;
-				let hugeCounter = 0;
+			const posListFactory = (seed = {x: 310, y: 112}) => {
+				let h = this.maxHigh;
+				let x = seed.x;
+				let y = seed.y;
+				let partern = x > 150 ? 1 : 2;
+				let srcPos = [];
 
-				while(miniCounter < 4) {
-					let point = _randomPoint(750, h);
-					
-					point.radius = 32;
+				// 生成四个大圆的坐标
+				for (let i = 0; i < 4; i++) {
+					let randomFactor = 15 * Math.random();
+					let pos = {radius: 60, x: randomFactor, y: randomFactor};
 
-					if(_isValid(point, h, pointList)) {
-						miniCounter++;
-						pointList.push(point);
+					switch (i) {
+						case 0: {
+							pos.x += x;
+							pos.y += y;
+							break;
+						}
+						case 1: {
+							pos.x += 750 - 120 - y;
+							pos.y += x;
+							break;
+						}
+						case 2: {
+							pos.x += 750 - 120 - x;
+							pos.y += h - 120 - y;
+							break;
+						}
+						case 3: {
+							pos.x += y;
+							pos.y += h - 120 - x;
+							break;
+						}
 					}
+
+					this.avaList.push(pos);
+				}
+				
+				// 根据显示模式生成五个小圆坐标
+				{
+					if (partern === 1) {
+						this.avaList.push({radius: 35, x: 275 + 10 * _rnum(), y: h - 90 + 10 * _rnum()});
+						// 通过对大圆坐标加减来得到小圆坐标
+
+						// for (let i = 0; i < 5; i++) {
+						// 	let temp = {radius: 35};
+
+						// 	temp.x = (10 * _rnum() + srcPos[i].x);
+						// 	temp.y = (10 * _rnum() + srcPos[i].y);
+						// 	this.avaList.push(temp);
+						// }
+					} else {
+						this.avaList.push({radius: 35, x: 275 + 10 * _rnum(), y: 90 + 10 * _rnum()});
+					}
+
+					// for (let i = 0; i < 5; i++) {
+					// 	let temp = {radius: 35};
+
+					// 	temp.x = (10 * _rnum() + srcPos[i].x);
+					// 	temp.y = (10 * _rnum() + srcPos[i].y);
+					// 	this.avaList.push(temp);
+					// }
 				}
 
-				while(hugeCounter < 5) {
-					let point = _randomPoint(750, h);
-					
-					point.radius = 55;
-
-					if(_isValid(point, h, pointList)) {
-						hugeCounter++;
-						pointList.push(point);
-					}
-				}
-
-				return pointList;
+				console.log(this.avaList);
 			}
 
-			this.avaList = _randomPositions(840);
-
-			console.log(this.avaList)
-
-			this.avaList.forEach((val, idx) => {
-				val.src = this.srclist[idx];
-				val.id = 'avaList' + idx;
-			})
+			posListFactory(_rollSeed());
 
 			this.$apply();
 		}

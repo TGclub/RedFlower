@@ -1,11 +1,6 @@
 /* 定义一些公用的style，采用BEM(block-element__modifier)的规则进行命令，以及使用公共命名空间。*/
 /*
 .l- layouts（全局使用的布局)
-.o- objects (独立于上下文的组件属性)
-.c- components(组件属性）
-.is-,.has- 表示状态的样式
-.t1,.s1 表示排版的大小（font-size等)
-.u-utility 表示实用类
 */
 @import "variables";
 @import "mixins";
@@ -67,5 +62,3 @@ view{
 .absolute{
 	position: absolute;
 }
-
-/* typefaces 28 18 16 14 12*/

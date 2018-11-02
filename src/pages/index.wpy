@@ -11,35 +11,50 @@
 	export default class Index extends page {
 		data = {
 			login: {
-				code: '',
-				encryptedData: '',
-				iv: ''
+				code: ''
 			}
 		}
 
-		onLoad () {
-			this.$WX.wxLogin()
-			.then(res => {
-				this.login.code = res.code;
-				return this.$WX.wxGetUserInfo();
-			})
-			.then(res => {
-				this.login.encryptedData = res.encryptedData;
-				this.login.iv = res.iv;
-				return this.$API('login', this.login);
-			})
-			.then(res => {
-				console.log(res);
-			})
-
-			// this.$API('getInterface', {userId: 1})
-			// .then(res => {
-			// 	console.log(res)
-			// })
-		}
-
 		GetInfo (e) {
-			console.log(e.detail.userInfo)
+			this.$WX.toast('tapped!');
+
+			// this.$WX.wxLogin()
+			// .then(res => {
+			// 	this.login.code = res.code;
+			// 	console.log(this.login);
+			// 	return this.$API('login', this.login);
+			// })
+			// .then(res => {
+			// 	// console.log(res);
+			// })
+			
+			let that = this;
+
+			wx.login({
+				complete: function (res) {
+					console.log(res.code);
+					// wx.getUserInfo({
+					// 	success: function(res) {
+					// 		console.log(res)
+					// 		wx.request({
+					// 			url: 'http://193.112.69.104:8091/user/updateUserInfo',
+					// 			data: JSON.parse(res.rawData),
+					// 			success: function (res) {
+					// 				console.log(res);
+					// 			}
+					// 		})
+					// 	}
+					// })
+					wx.request({
+						url: 'http://193.112.69.104:8091/user/login',
+						method: 'POST',
+						data: {code: res.code},
+						success: function (res) {
+							console.log(res);
+						}
+					})
+				}
+			})
 		}
 	}
 </script>

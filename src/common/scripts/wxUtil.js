@@ -7,7 +7,6 @@
  * @return {Promise}
  */
 const _configFn = (wxAPI, config = {}) => {
-    console.log(config);
     return new Promise((resolve, reject) => {
         config.success = res => (resolve(res));
         config.fail = err => (reject(err));

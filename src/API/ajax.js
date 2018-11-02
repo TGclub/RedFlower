@@ -29,9 +29,8 @@ function _normalRequest (config = {}) {
                 statusCodeFilter(res.statusCode);
                 reject(res.statusCode);
             }
-            resolve(res.data)
+            resolve(res.data);
         }
-
         ajax(config);
     })
 }

@@ -386,16 +386,26 @@
 			// this.avaList = this.avaList1;
 
 			// 因后端接口未完成，故填入假数据
-			this.userhead.src = '../static/images/contacts/avatar.jpg';
-			for(let i = 0; i < this.avaList1.length; i++) {
-				this.avaList1[i].src = '../static/images/contacts/avatar.jpg';
-			}
-			for(let i = 0; i < this.avaList2.length; i++) {
-				this.avaList2[i].src = '../static/images/contacts/avatar.jpg';
-			}
-			for(let i = 0; i < this.avaList2.length; i++) {
-				this.avaList3[i].src = '../static/images/contacts/avatar.jpg';
-			}
+			// this.userhead.src = '../static/images/contacts/avatar.jpg';
+			// for(let i = 0; i < this.avaList1.length; i++) {
+			// 	this.avaList1[i].src = '../static/images/contacts/avatar.jpg';
+			// }
+			// for(let i = 0; i < this.avaList2.length; i++) {
+			// 	this.avaList2[i].src = '../static/images/contacts/avatar.jpg';
+			// }
+			// for(let i = 0; i < this.avaList2.length; i++) {
+			// 	this.avaList3[i].src = '../static/images/contacts/avatar.jpg';
+			// }
+			
+			// this.$API('getInterface', )
+
+			wx.request({
+				url: 'http://193.112.69.104:8091/user/userInfo',
+				method: 'GET',
+				success: function (res) {
+					console.log(res);
+				}
+			})
 		}
 	}
 </script>

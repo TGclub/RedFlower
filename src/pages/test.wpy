@@ -6,6 +6,7 @@
 		overflow: visible;
 	}
 
+	/* 暂行的解决办法，根本解决办法还是在该页面中显式向头像网传入画布高度，然后把按钮们挤下去 */
 	.btns{
 		position: fixed;
 		bottom: 0;
@@ -63,13 +64,6 @@
 
 		onLoad () {
 			console.log('test');
-
-			// 因后端接口未完成，故填入假数据 #issue: 头像为何传不过去？？
-			// this.userhead = '../static/images/contacts/avatar.jpg';
-			// 还是假数据
-			for(let i = 0; i < 9; i++) {
-				this.srclist[i] = '../static/images/contacts/avatar.jpg';
-			}
 
 			this.$apply();
 		}

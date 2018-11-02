@@ -1,6 +1,6 @@
 // 请求基本配置
 const URLS = {
-    'local': 'http://193.112.69.104:8092'
+    'local': 'http://193.112.69.104:8091'
 };
 
 const baseURL = URLS['local'];
