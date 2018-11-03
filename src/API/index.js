@@ -2,7 +2,7 @@
 import ajax from './ajax'
 import API from './APIList'
 
-export default (apiKey, data, headers) => {
+export default (apiKey, data = {}, headers) => {
     let api = API[apiKey];
 
     if(!api) {

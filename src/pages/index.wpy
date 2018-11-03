@@ -1,8 +1,26 @@
 <style lang="scss" type="text/scss">
+	@import "../common/styles/variables.scss";
+    @import "../common/styles/mixins.scss";
+
+	.index{
+		width: 100%;
+		margin-top: -125rpx;
+		margin-bottom: -160rpx; 
+	}
+
+	.btn{
+		width: 496rpx;
+		height: 88rpx;
+		margin: auto  127rpx;
+		color: #fff;
+		background: $blue;
+		border-radius: 44rpx;
+	}
 </style>
 
 <template>
-	<button open-type="getUserInfo" bindgetuserinfo="GetInfo" size="default">2333</button>
+	<image class="index" mode='widthFix' src='../static/images/index.png'></image>
+	<button class="btn" open-type="getUserInfo" bindgetuserinfo="GetInfo">授权登录</button>
 </template>
 
 <script>
@@ -16,41 +34,43 @@
 		}
 
 		GetInfo (e) {
-			this.$WX.toast('tapped!');
-
 			// this.$WX.wxLogin()
 			// .then(res => {
 			// 	this.login.code = res.code;
-			// 	console.log(this.login);
 			// 	return this.$API('login', this.login);
 			// })
 			// .then(res => {
-			// 	// console.log(res);
-			// })
-			
-			let that = this;
+			// 	// 获取cookie
+			// 	console.log(res);
 
+			// 	// 登录后获取用户信息
+			// 	// 以下开始可以直接复制粘贴用
+			// 	this.$API('getUserInfo')
+			// 	.then(res => {
+			// 		console.log(res);
+			// 	})
+			// })
+
+			let that = this;
 			wx.login({
 				complete: function (res) {
-					console.log(res.code);
-					// wx.getUserInfo({
-					// 	success: function(res) {
-					// 		console.log(res)
-					// 		wx.request({
-					// 			url: 'http://193.112.69.104:8091/user/updateUserInfo',
-					// 			data: JSON.parse(res.rawData),
-					// 			success: function (res) {
-					// 				console.log(res);
-					// 			}
-					// 		})
-					// 	}
-					// })
+					console.log(res)
+					// 发起登录请求
 					wx.request({
-						url: 'http://193.112.69.104:8091/user/login',
+						url: 'http://193.112.69.104:8091/user/login?code=' + res.code,
 						method: 'POST',
-						data: {code: res.code},
 						success: function (res) {
+							// 获取cookie
 							console.log(res);
+							that.$WX.setStorage('JSESSIONID', res.header['Set-Cookie'].slice(11, -18));
+						
+							// 登录后获取用户信息
+							// 以下开始可以直接复制粘贴用
+							that.$API('getUserInfo', {}, {Cookie: res.header['Set-Cookie']})
+							.then(res => {
+								console.log(res);
+								that.$WX.jumpTo('./contacts')
+							})
 						}
 					})
 				}

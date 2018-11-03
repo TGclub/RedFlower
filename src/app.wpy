@@ -6,9 +6,12 @@
 import wepy from 'wepy'
 
 export default class extends wepy.app {
+  globalData  = {
+    screenHeight: 0
+  }
+
   config = {
     pages: [
-      // 'pages/test',
       'pages/index',
       'pages/contacts',
       'pages/contacts/groups',
@@ -37,7 +40,7 @@ export default class extends wepy.app {
             	'selectedIconPath': 'static/images/tabBar/ask_selected.png'
             },
             {
-            	'pagePath': 'pages/contacts',
+              'pagePath': 'pages/contacts',            
             	'iconPath': 'static/images/tabBar/contacts_default.png',
             	'text': '人脉网',
             	'selectedIconPath': 'static/images/tabBar/contacts_selected.png'
@@ -50,6 +53,17 @@ export default class extends wepy.app {
             }
       	]
     }
+  }
+
+  onLaunch () {
+    let that = this;
+
+    wx.getSystemInfo({
+      complete (res) {
+        console.log(res)
+        res.windowHeight ? that.screenHeight = res.windowHeight * 750 / res.windowWidth : 1206;
+      }
+    })
   }
 }
 </script>

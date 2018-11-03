@@ -6,7 +6,6 @@
 		&-container{
 			position: relative;
 			width: 750rpx; 
-        	height: 840rpx; 
 			overflow: hidden;
 		}
 		&-userhead{
@@ -56,38 +55,38 @@
 </style>
 
 <template>
-	<view class="net-container">
+	<view class="net-container" style="height: {{high}}rpx;">
 		<!-- 用户中心头像显示 -->
-		<view class="l-rowAllMid absolute net-userhead"  style='opacity: {{userhead.opacity}};'>
+		<view class="l-rowAllMid absolute net-userhead">
 			<image class="absolute net-rings" src='../static/images/contacts/rings.png'></image>
-			<view  class='net-avatar'>
+			<view  class='net-avatar' style='opacity: {{userhead.opacity}};'>
 				<image src='{{userhead.src}}'></image>
 			</view>
 		</view>
 
 		<!-- 人脉网显示图一 -->
         <repeat for="{{avaList1}}" item="item" index='idx'>
-			<view class='net-avatar absolute' style="width: {{item.size}}rpx; height: {{item.size}}rpx; top: {{item.top}}rpx; left: {{item.left}}rpx; opacity: {{avaList1opacity}}; display: {{avaList1show}};">
+			<view class='net-avatar absolute' style="width: {{item.size}}rpx; height: {{item.size}}rpx; top: {{item.top}}; left: {{item.left}}rpx; opacity: {{avaList1opacity}}; display: {{avaList1show}};">
                 <image src='{{item.src}}' id='avaList1{{idx}}' @tap='changeUser'></image>
             </view>
 		</repeat>
 
 		<!-- 人脉网显示图二 -->
 		<repeat for="{{avaList2}}" item="item" index='idx'>
-			<view class='net-avatar absolute' style="width: {{item.size}}rpx; height: {{item.size}}rpx; top: {{item.top}}rpx; left: {{item.left}}rpx; opacity: {{avaList2opacity}}; display: {{avaList2show}};">
+			<view class='net-avatar absolute' style="width: {{item.size}}rpx; height: {{item.size}}rpx; top: {{item.top}}; left: {{item.left}}rpx; opacity: {{avaList2opacity}}; display: {{avaList2show}};">
 				<image src='{{item.src}}' id='avaList2{{idx}}' @tap='changeUser'></image>
 			</view>
 		</repeat>
 
 		<!-- 人脉网显示图三 -->
 		<repeat for="{{avaList3}}" item="item" index='idx'>
-			<view class='net-avatar absolute' style="width: {{item.size}}rpx; height: {{item.size}}rpx; top: {{item.top}}rpx; left: {{item.left}}rpx; opacity: {{avaList3opacity}}; display: {{avaList3show}};">
+			<view class='net-avatar absolute' style="width: {{item.size}}rpx; height: {{item.size}}rpx; top: {{item.top}}; left: {{item.left}}rpx; opacity: {{avaList3opacity}}; display: {{avaList3show}};">
 				<image src='{{item.src}}' id='avaList3{{idx}}' @tap='changeUser'></image>
 			</view>
 		</repeat>
 
 		<!-- 为完成点击头像切换人脉网效果而设置的特殊模块 -->
-		<view class='net-avatar net-transport absolute' style="width: {{transport.size}}rpx; height: {{transport.size}}rpx; top: {{transport.top}}rpx; left: {{transport.left}}rpx; display: {{transport.show}}">
+		<view class='net-avatar net-transport absolute' style="width: {{transport.size}}rpx; height: {{transport.size}}rpx; top: {{transport.top}}; left: {{transport.left}}rpx; display: {{transport.show}}">
 			<image src='{{transport.src}}'></image>
 		</view>
 	</view>
@@ -115,6 +114,8 @@
 		}
 
 		data = {
+			// 幕布高度
+			high: 840,
 			userhead: {
 				src: '',
 				opacity: '1'
@@ -129,117 +130,117 @@
 			avaList1: [
 				{
                 size: '112',
-                top: '200',
+                top: '23.8%',
                 left: '148'
 				},{
 					size: '112',
-					top: '168',
+					top: '20%',
 					left: '472'
 				},{
 					size: '112',
-					top: '520',
+					top: '61.9%',
 					left: '160'
 				},{
 					size: '112',
-					top: '520',
+					top: '61.9%',
 					left: '480'
 				},{
 					size: '64',
-					top: '104',
+					top: '12.4%',
 					left: '344'
 				},{
 					size: '64',
-					top: '400',
+					top: '47.6%',
 					left: '48'
 				},{
 					size: '64',
-					top: '400',
+					top: '47.6%',
 					left: '642'
 				},{
 					size: '64',
-					top: '718',
+					top: '85.5%',
 					left: '208'
 				},{
 					size: '64',
-					top: '718',
+					top: '85.5%',
 					left: '480'
 				}
 			],
 			avaList2: [
 				{
 					size: '112',
-					top: '112',
+					top: '13.3%',
 					left: '320'
 				},{
 					size: '112',
-					top: '346',
+					top: '41.2%',
 					left: '92'
 				},{
 					size: '112',
-					top: '354',
+					top: '42.1%',
 					left: '540'
 				},{
 					size: '112',
-					top: '580',
+					top: '69%',
 					left: '320'
 				},{
 					size: '64',
-					top: '166',
+					top: '19.8%',
 					left: '72'
 				},{
 					size: '64',
-					top: '168',
+					top: '20%',
 					left: '608'
 				},{
 					size: '64',
-					top: '600',
+					top: '71.4%',
 					left: '104'
 				},{
 					size: '64',
-					top: '614',
+					top: '73.1%',
 					left: '560'
 				},{
 					size: '64',
-					top: '770',
+					top: '91.7%',
 					left: '344'
 				}
 			],
 			avaList3: [
 				{
 					size: '112',
-					top: '160',
+					top: '19.0%',
 					left: '440'
 				},{
 					size: '112',
-					top: '320',
+					top: '38.1%',
 					left: '110'
 				},{
 					size: '112',
-					top: '400',
+					top: '47.6%',
 					left: '520'
 				},{
 					size: '112',
-					top: '540',
+					top: '64.3%',
 					left: '220'
 				},{
 					size: '64',
-					top: '54',
+					top: '6.4%',
 					left: '376'
 				},{
 					size: '64',
-					top: '140',
+					top: '16.7%',
 					left: '140'
 				},{
 					size: '64',
-					top: '652',
+					top: '77.6%',
 					left: '96'
 				},{
 					size: '64',
-					top: '620',
+					top: '73.8%',
 					left: '530'
 				},{
 					size: '64',
-					top: '730',
+					top: '86.9%',
 					left: '380'
 				}
 			],
@@ -347,7 +348,7 @@
 
 				setTimeout(() => {
 					this.transport.size = '204';
-					this.transport.top = '298';
+					this.transport.top = '35.5%';
 					this.transport.left = '270';
 					this.$apply();
 				}, 1000)
@@ -398,14 +399,11 @@
 			// }
 			
 			// this.$API('getInterface', )
+			
+			// 设置幕布高度
+			this.high = this.$parent.screenHeight * 0.75;
 
-			wx.request({
-				url: 'http://193.112.69.104:8091/user/userInfo',
-				method: 'GET',
-				success: function (res) {
-					console.log(res);
-				}
-			})
+			this.$apply();
 		}
 	}
 </script>

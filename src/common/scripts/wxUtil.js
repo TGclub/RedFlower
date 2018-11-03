@@ -8,8 +8,13 @@
  */
 const _configFn = (wxAPI, config = {}) => {
     return new Promise((resolve, reject) => {
-        config.success = res => (resolve(res));
-        config.fail = err => (reject(err));
+        // 为非wx.request微信接口指定默认success和fail函数
+        if (!config.success) {
+            config.success = res => (resolve(res));
+        }
+        if (!config.fail) {
+            config.fail = err => (reject(err));
+        }
         wxAPI(config);
     })
 }
@@ -19,13 +24,9 @@ const _configFn = (wxAPI, config = {}) => {
  * @param url {String} method {string} data {object} header {object}
  * @return {Promise}
  */
-const ajax = ({url, method, data, header}) => {
-    return _configFn(wx.request, {
-        url: url,
-        method: method,
-        data: data,
-        header: header
-    })
+const ajax = (config) => {
+    console.log(config)
+    return _configFn(wx.request, config)
 }
 
 const wxLogin = () => {
@@ -33,12 +34,6 @@ const wxLogin = () => {
 }
 
 const wxGetUserInfo = () => {
-    // _configFn(wx.getSetting)
-    // .then((res) => {
-    //     if(res.authSetting['scope.userInfo']) {
-    //         return _configFn(wx.getUserInfo);
-    //     }
-    // })
     return _configFn(wx.getUserInfo);
 }
 
@@ -69,11 +64,26 @@ const toast = (title, icon = 'none', duration = 1500, hasMask = false) => {
     })
 }
 
+const setStorage = (key, value) => {
+    return _configFn(wx.setStorage, {key: key, data: value});
+}
+
+const cleanStorage = () => {
+    return _configFn(wx.clearStorage, {});
+}
+
+const getStorage = (key) => {
+    return _configFn(wx.getStorage, {key: key});
+}
+
 export {
     ajax, // 发起ajax请求
     wxLogin, // 登录
-    wxGetUserInfo, // 获取用户信息
+    wxGetUserInfo, // 获取用户微信信息
     getSystemInfo, // 获取系统信息
     jumpTo, // page跳转
-    toast // 显示消息提示框
+    toast, // 显示消息提示框
+    setStorage, // 设置cookie
+    cleanStorage, // 清除cookie
+    getStorage, //获取cookie
 }

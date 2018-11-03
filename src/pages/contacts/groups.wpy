@@ -152,11 +152,18 @@
 		onLoad () {
 			console.log('groups');
 
-			wx.getSystemInfo({
-				success: (res) => {
-					this.windowHeight = res.windowHeight * 2;
-				}
+			// 获取用户窗口可用高度
+			this.windowHeight = this.$parent.screenHeight;
+
+			// 获取cookie
+			let cookie = '';
+			this.$WX.getStorage('JSESSIONID')
+			.then(res => {
+				cookie = 'JSESSIONID=' + res.data;
 			})
+
+			// 获取用户人脉网列表
+			this.$API('getNetList', {}, {cookie: cookie});
 		}
 	}
 </script>

@@ -24,12 +24,12 @@ function _normalRequest (config = {}) {
 
         config.success = res => {
             // wx.request只要接收到服务器的返回值就会进入success
-            // 一般请求的话应该够用了吧。。
             if (res.statusCode !== 200) {
                 statusCodeFilter(res.statusCode);
                 reject(res.statusCode);
+            } else {
+                resolve(res.data);
             }
-            resolve(res.data);
         }
         ajax(config);
     })
@@ -53,7 +53,7 @@ export default (rurl = argumentsErr(), method = methodErr(), data = null, header
     if (SUPPROT_METHODS[_method]) {
         methodErr();
     } else {
-        _configRequest({
+        return _configRequest({
             url: _url,
             method: _method,
             header: _configHeader(headers),

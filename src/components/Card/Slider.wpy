@@ -35,6 +35,7 @@
             width: 126rpx;
             color: #818399;
             margin-right: 8rpx;
+            white-space: nowrap;
         }
         &-next{
             width: 36rpx;
