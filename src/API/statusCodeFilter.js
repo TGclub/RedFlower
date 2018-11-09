@@ -1,4 +1,3 @@
-// 用来解析状态码，不止用来调试，也用来给用户反馈
 import { toast } from '../common/scripts/wxUtil'
 
 const notFound = () => {

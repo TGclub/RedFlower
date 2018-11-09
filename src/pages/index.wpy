@@ -295,7 +295,6 @@
 					// 向transport中注入信息
 					let insertTransport = (resolve) => {
 						return new Promise((resolve, reject) => {
-							console.log(1);
 							this.transport.id = selectedAva.id;					
 							this.transport.src = selectedAva.src;
 							this.transport.size = selectedAva.size;
@@ -310,7 +309,6 @@
 					// 头像列表消失动画
 					let avaListFadeOut = (resolve) => {
 						return new Promise((resolve, reject) => {
-							console.log(2);
 							this.userhead.opacity = '0';
 							this.avaList1opacity = '0';
 							this.avaList2opacity = '0';
@@ -320,7 +318,6 @@
 						})
 						.then(() => {
 							return new Promise((resolve, reject) => {
-								console.log(3);
 								setTimeout(() => {
 									this.avaList1show = false;
 									this.avaList2show = false;
@@ -335,7 +332,6 @@
 					// 清空头像列表信息，更改中心头像
 					let cleanAvaList = (resolve) => {
 						return new Promise((resolve, reject) => {
-							console.log(4);
 							for(let i = 1; i < 4; i++) {
 								for(let j = 0; j < 9; j++) {
 									this[`avaList${i}`][j].src = '';
@@ -351,9 +347,8 @@
 					// 好友头像移动到中间
 					let moveAva = (resolve) => {
 						return new Promise((resolve, reject) => {
-							console.log(5);
 							this.transport.size = '204';
-							this.transport.top = '34.8%';
+							this.transport.top = '34.9%';
 							this.transport.left = '270';
 							this.$apply();
 							resolve();
@@ -365,9 +360,7 @@
 					let getFriendNetInfo = (resolve) => {
 						return this.$API('getNetInfo', {uid: this.transport.id}, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
 						.then(res => {
-							console.log(res);
 							return new Promise((resolve, reject) => {
-								console.log(6);
 								if (res.data) {
 									for(let i = 0; i < res.data.length; i++) {
 										if (i < 9) {
@@ -392,7 +385,6 @@
 					// 清空transport并显示头像列表
 					let avaListFadeIn = (resolve) => {
 						return new Promise((resolve, reject) => {
-							console.log(7);
 							setTimeout(() => {
 								this.userhead.opacity = '1';
 
@@ -404,7 +396,6 @@
 							}, 1000)
 						})
 						.then(() => {
-							console.log(8)
 							return new Promise((resolve, reject) => {
 								setTimeout(() => {
 									this.avaList1opacity = '1';
@@ -439,8 +430,6 @@
 		}
 
 		onLoad () {
-			console.log('index');
-			
 			// 设置幕布高度
 			this.high = this.$parent.screenHeight * 0.75;
 
@@ -449,7 +438,6 @@
 
 			this.$API('getNetInfo', {uid: this.$parent.userId}, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
 			.then(res => {
-				console.log(res);
 				if (res.data) {
 					for(let i = 0; i < res.data.length; i++) {
 						if (i < 9) {

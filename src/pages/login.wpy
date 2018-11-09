@@ -75,15 +75,11 @@
 			// 将用户信息传给后台
 			this.$API('postUserInfo', userData, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
 			.then(res => {
-				console.log(res);
 				return this.$API('getUserInfo', {}, {Cookie: 'JSESSIONID=' + this.$parent.sessionId});
 			})
 			.then(res => {
-				console.log(res);
 				// 登录后获取用户id,并存入全局变量
 				this.$parent.userId = res.data.id;
-
-				console.log(JSON.stringify(this.options))
 
 				if (JSON.stringify(this.options) !== '{}') {
 					this.$WX.jumpTo('./join?id=' + this.$parent.userId + '&nid=' + this.options.nid  + '&ava=' + this.options.ava);

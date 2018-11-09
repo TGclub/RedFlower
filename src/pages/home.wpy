@@ -230,7 +230,6 @@
 					
 					this.$API('postUserInfo', info, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
 					.then(res => {
-						console.log(res);
 						this.showMask = false
 						this.$apply();
 					})
@@ -239,8 +238,6 @@
 		}
 
 		onLoad () {
-			console.log('home');
-
 			// 获取用户窗口可用高度
 			this.windowHeight = this.$parent.screenHeight;
 
@@ -249,8 +246,6 @@
 			// 获取用户信息并显示
 			this.$API('getUserInfo', {}, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
 			.then(res => {
-				console.log(res)
-
 				this.nickname = decodeURI(res.data.name) || this.$parent.nickname;
 				this.gender = res.data.gender || this.$parent.gender;
 				this.definition = res.data.definition || this.$parent.definition || '一个简单的人balabala....';

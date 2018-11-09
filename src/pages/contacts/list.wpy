@@ -309,14 +309,12 @@
 				return {
 					title: '快来加入我的人脉圈吧',
 					imageUrl: '../../static/images/login_slice.png',
-					path: 'pages/load?id=' + this.options.id + '&nid=' + this.options.nid + '&ava=' + this.$parent.avatarUrl
+					path: `pages/load?id=${this.options.id}&nid=${this.options.nid}&ava=${this.$parent.avatarUrl}`
 				}
 			}
 		}
 
 		onLoad (options) {
-			console.log('list');
-
 			// 设置幕布高度
 			this.high = this.$parent.screenHeight * 0.70;
 
@@ -329,7 +327,6 @@
 			// 请求头像列表
 			this.$API('getNetMembers', {nid: this.options.nid}, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
 			.then(res => {
-				console.log(res)
 				if (res.data) {
 					for(let i = 0; i < res.data.length; i++) {
 						if (i < 9) {

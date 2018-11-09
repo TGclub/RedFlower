@@ -1,5 +1,4 @@
 // 微信接口
-// 在组件内部保留抽象，方便日后替换掉wx接口模块
 import {appRelevant} from '../../API/config'
 
 /**
@@ -26,7 +25,6 @@ const _configFn = (wxAPI, config = {}) => {
  * @return {Promise}
  */
 const ajax = (config) => {
-    console.log(config)
     return _configFn(wx.request, config)
 }
 

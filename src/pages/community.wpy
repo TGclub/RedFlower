@@ -26,8 +26,6 @@
 		}
 
 		onLoad () {
-			console.log('community');
-			
 			this.$WX.getSystemInfo()
 			.then(res => {
 				res.windowHeight ? this.high = (res.windowHeight - res.statusBarHeight) * 750 / res.windowWidth : 1206;

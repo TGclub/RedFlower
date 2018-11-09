@@ -44,7 +44,6 @@
                         return this.$API('getUserInfo', {}, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
                     })
                     .then(res => {
-                        console.log(res)
                         // 获取用户保存在服务器上的信息,并存入全局数据中
                         this.$parent.userId = res.data.id;
                         this.$parent.name = res.data.name;
@@ -57,8 +56,7 @@
                             this.$WX.jumpTo('./join?nid=' + options.nid + '&ava=' + options.ava);
                         } else {
                         // 正常进入
-                            this.$WX.jumpTo('./login');
-                            // this.$WX.jumpTo('./index');
+                            this.$WX.jumpTo('./index');
                         }
                     })
                 }

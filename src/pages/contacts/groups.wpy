@@ -136,7 +136,7 @@
 
 		methods = {
 			jumpToList (e, idx) {
-				this.$WX.jumpTo('./list?id=' + this.list[idx].id + '&nid=' + this.list[idx].nid);
+				this.$WX.jumpTo(`./list?id=${this.list[idx].id}&nid=${this.list[idx].nid}`);
 			},
 			createGroup (e) {
 				this.showMask = true;
@@ -175,10 +175,7 @@
 		}
 
 		onLoad () {
-			console.log('groups');
-
 			this.list = [];
-
 			this.showMask = false;
 
 			// 获取用户窗口可用高度
@@ -187,7 +184,6 @@
 			// 获取用户人脉网列表
 			this.$API('getNetList', {}, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
 			.then(res => {
-				console.log(res)
 				if (res.data) {
 					for (let i = 0; i < res.data.length; i++) {
 						let ele = {};

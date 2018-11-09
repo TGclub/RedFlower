@@ -79,12 +79,8 @@
         }
 
         props = {
-            item: {
-                type: Object
-            },
-            idx: {
-                type: Number
-            }
+            item: Object,
+            idx: Number
         }
 	}
 </script>

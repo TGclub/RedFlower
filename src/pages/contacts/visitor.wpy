@@ -372,26 +372,20 @@
 		}
 
 		onLoad (options) {
-			console.log('visitor');
 			
 			this.$API('getFriendInfo', {uid: Number(options.id)}, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
 			.then(res => {
-				console.log(res)
 				this.userhead.src = res.data.avatarUrl;
 
 				this.friend.id = res.data.id;
 				this.friend.name = decodeURI(res.data.name);
 				this.friend.gender = res.data.gender;
 				this.friend.definition = res.data.definition || '一个简单的人balabala....';
-
-				// 设置页面标题
-				this.config.navigationBarTitleText = this.friend.name + '的人脉圈';
 				this.$apply();
 
 				return this.$API('getNetInfo', {uid: Number(options.id)}, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
 			})
 			.then(res => {
-				console.log(res)
 				if (res.data) {
 					for(let i = 0; i < res.data.length; i++) {
 						if (i < 9) {

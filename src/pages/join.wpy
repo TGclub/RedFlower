@@ -147,7 +147,6 @@
 
 				this.$API('inviteFriend', data, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
 				.then(res => {
-					console.log(res)
 					if (res.code === 1) {
 						if(res.message = '该用户已经加入！') {
 							this.$WX.toast('您已经在人脉网中了哦');
@@ -162,8 +161,6 @@
 		}
 
 		onLoad (options) {
-			console.log('join');
-			
 			// 设置幕布高度
 			this.high = this.$parent.screenHeight * 0.75;
 
@@ -175,8 +172,6 @@
 
 			this.$API('getNetInfo', {uid: this.$parent.userId}, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
 			.then(res => {
-				console.log(res);
-
 				if (res.data) {
 					for(let i = 0; i < 9; i++) {
                         this.avaList[i].src = res.data[i].avatarUrl;
