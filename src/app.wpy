@@ -1,5 +1,7 @@
 <style lang="scss" type="text/scss">
-
+  page{
+    background: #fafafa;
+  }
 </style>
 
 <script>
@@ -7,13 +9,21 @@ import wepy from 'wepy'
 
 export default class extends wepy.app {
   globalData  = {
-    screenHeight: 0
+    screenHeight: 0,
+    sessionId: '',
+    userId: 0,
+    name: '',
+    gender: '',
+    definition: '',
+    avatarUrl: ''
   }
 
   config = {
     pages: [
+      'pages/load',
+      'pages/login',
+      'pages/join',
       'pages/index',
-      'pages/contacts',
       'pages/contacts/groups',
       'pages/contacts/visitor',
       'pages/contacts/list',
@@ -40,7 +50,7 @@ export default class extends wepy.app {
             	'selectedIconPath': 'static/images/tabBar/ask_selected.png'
             },
             {
-              'pagePath': 'pages/contacts',            
+              'pagePath': 'pages/index',            
             	'iconPath': 'static/images/tabBar/contacts_default.png',
             	'text': '人脉网',
             	'selectedIconPath': 'static/images/tabBar/contacts_selected.png'
@@ -53,17 +63,6 @@ export default class extends wepy.app {
             }
       	]
     }
-  }
-
-  onLaunch () {
-    let that = this;
-
-    wx.getSystemInfo({
-      complete (res) {
-        console.log(res)
-        res.windowHeight ? that.screenHeight = res.windowHeight * 750 / res.windowWidth : 1206;
-      }
-    })
   }
 }
 </script>

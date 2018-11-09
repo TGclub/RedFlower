@@ -1,0 +1,68 @@
+<style lang="scss" type="text/scss">
+
+</style>
+
+<template>
+
+</template>
+
+<script>
+	import page from './base/basicPage'
+
+	export default class Load extends page {
+		onLoad (options) {
+            // 获取屏幕高度
+            this.$WX.getSystemInfo()
+            .then(res => {
+                res.windowHeight ? this.$parent.screenHeight = res.windowHeight * 750 / res.windowWidth : 1206;
+            })
+            
+            // 获取用户授权信息,若用户已授权跳过登录页
+            this.$WX.getSetting()
+            .then(res => {
+                // 未授权
+                if (!res.authSetting['scope.userInfo']) {
+                    // 通过分享进入
+                    if (JSON.stringify(options) !== '{}') {
+                        this.$WX.jumpTo('./login?nid=' + options.nid + '&ava=' + options.ava);
+                    } else {
+                    // 正常进入
+                        this.$WX.jumpTo('./login');
+                    }
+                } 
+
+                // 已授权
+                if (res.authSetting['scope.userInfo']) {
+                    this.$WX.wxLogin()
+                    .then(res => {
+                    // 用户登录
+                        return this.$API('login', {code: res.code});
+                    })
+                    .then(res => {
+                    // 获取sessionId并存入全局数据中
+                        this.$parent.sessionId = res.data;
+                        return this.$API('getUserInfo', {}, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
+                    })
+                    .then(res => {
+                        console.log(res)
+                        // 获取用户保存在服务器上的信息,并存入全局数据中
+                        this.$parent.userId = res.data.id;
+                        this.$parent.name = res.data.name;
+                        this.$parent.gender = res.data.gender;
+                        this.$parent.definition = res.data.definition;
+                        this.$parent.avatarUrl = res.data.avatarUrl;
+
+                        // 通过分享进入
+                        if (JSON.stringify(options) !== '{}') {
+                            this.$WX.jumpTo('./join?nid=' + options.nid + '&ava=' + options.ava);
+                        } else {
+                        // 正常进入
+                            this.$WX.jumpTo('./login');
+                            // this.$WX.jumpTo('./index');
+                        }
+                    })
+                }
+            })
+		}
+	}
+</script>

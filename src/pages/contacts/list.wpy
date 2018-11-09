@@ -12,7 +12,7 @@
 		&-userhead{
 			width: 336rpx;
 			height: 336rpx;
-			top: 232rpx;
+			top: 27.6%;
 			left: 204rpx;
 			transition: opacity 1s;
 
@@ -44,6 +44,15 @@
 	.btns{
         margin-top: 100rpx;
 		justify-content: space-around;
+	}
+
+	.invite-btn{
+		width: 640rpx;
+		height: 90rpx;
+		margin: 26rpx 0;
+		border-radius: 45rpx;
+		background: $blue;
+		color: #fff;
 	}
 
 	.change-btn{
@@ -89,9 +98,8 @@
 	
 	<!-- 跳转按钮部分 -->
 	<view class=".l-colJusMid btns">
-        <firbtn title='邀请更多成员' width='624'></btn>
-        <view style="height: 26rpx;"></view>
-		<secbtn title='换一批' width='624' @btnClick.user='changeGroup' color='white-border'></btn>
+        <button class="invite-btn" open-type='share'>邀请更多成员</button>
+		<changeBtn title='换一批' width='624' @btnClick.user='changeGroup' color='white-border'></changeBtn>
 	</view>
 </template>
 
@@ -105,13 +113,13 @@
 		}
 
 		components = {
-			firbtn: Button,
-			secbtn: Button
+			changeBtn: Button
 		}
 
 		data = {
 			// 幕布高度
 			high: 840,
+			options: {},
 			userhead: {
 				src: '',
 				opacity: '1'
@@ -290,19 +298,55 @@
 				}
 			},
 			jumpToVisitor (e) {
-                wx.navigateTo({
-					url: './visitor'
-				})
+				const listNum = (e.currentTarget.id).slice(7, 8);
+				const idx = (e.currentTarget.id).slice(8);
+
+				if (this['avaList' + listNum][idx].id) {
+					this.$WX.jumpTo('./visitor?id=' + this['avaList' + listNum][idx].id)
+				}
+			},
+			onShareAppMessage (e) {
+				return {
+					title: '快来加入我的人脉圈吧',
+					imageUrl: '../../static/images/login_slice.png',
+					path: 'pages/load?id=' + this.options.id + '&nid=' + this.options.nid + '&ava=' + this.$parent.avatarUrl
+				}
 			}
 		}
 
-		onLoad () {
+		onLoad (options) {
 			console.log('list');
 
-			this.avaList = this.avaList1;
-
 			// 设置幕布高度
-			this.high = this.$parent.screenHeight * 0.75;
+			this.high = this.$parent.screenHeight * 0.70;
+
+			// 设置中心用户头像
+			this.userhead.src = this.$parent.avatarUrl;
+
+			// 设置跳转链接所需参数
+			this.options = options
+
+			// 请求头像列表
+			this.$API('getNetMembers', {nid: this.options.nid}, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
+			.then(res => {
+				console.log(res)
+				if (res.data) {
+					for(let i = 0; i < res.data.length; i++) {
+						if (i < 9) {
+							this.avaList1[i].src = res.data[i].avatarUrl;
+							this.avaList1[i].id = res.data[i].id;
+						} if (i >= 9 && i < 18) {
+							this.avaList2[i].src = res.data[i].avatarUrl;
+							this.avaList2[i].id = res.data[i].id;
+						} if (i >= 18 && i < 27) {
+							this.avaList3[i].src = res.data[i].avatarUrl;
+							this.avaList3[i].id = res.data[i].id;
+						}
+					}
+
+					this.$apply();
+				}
+			})
 		}
 	}
 </script>

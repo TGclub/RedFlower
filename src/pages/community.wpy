@@ -1,0 +1,38 @@
+<style lang="scss" type="text/scss">
+	@import "../common/styles/variables.scss";
+	@import "../common/styles/common.scss";
+
+	.text{
+		width: 750rpx;
+		text-align: center;
+		color: $grey;
+	}
+</style>
+
+<template>
+	<view class="text" style="height: {{high}}rpx; line-height: {{high}}rpx">程序员小哥哥正在买肝中...</view>
+</template>
+
+<script>
+	import page from './base/basicPage'
+
+	export default class Community extends page {
+		config = {
+			navigationBarTitleText: '提问'
+		}
+
+		data = {
+			high: 1206
+		}
+
+		onLoad () {
+			console.log('community');
+			
+			this.$WX.getSystemInfo()
+			.then(res => {
+				res.windowHeight ? this.high = (res.windowHeight - res.statusBarHeight) * 750 / res.windowWidth : 1206;
+				this.$apply();				
+			})
+		}
+	}
+</script>

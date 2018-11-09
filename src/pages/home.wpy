@@ -1,0 +1,264 @@
+<style lang="scss" type="text/scss">
+	@import "../common/styles/variables.scss";
+	@import "../common/styles/common.scss";
+
+	.dialog{
+		position: relative;
+		display: flex;
+		width: 686rpx;
+		height: 352rpx;
+		margin-top: 32rpx;
+		margin-left: 34rpx;
+
+		&-bgimg{
+			position: absolute;
+			width: 100%;
+			height: 100%;
+		}
+
+		&-fir-col{
+			width: 220rpx;
+			height: 275rpx;
+			padding-left: 45rpx;
+			z-index: 2;
+		}
+
+		&-avatar{
+			width: 160rpx;
+			height: 160rpx;
+			border-radius: 50%;
+			border: 2rpx solid #fff;
+
+			image{
+				width: 100%;
+				height: 100%;
+				border-radius: 50%;
+			}
+		}
+
+		&-sec-col{
+			height: 227rpx;
+			margin-top: 48rpx;
+			margin-left: 16rpx;
+			z-index: 2;
+		}
+
+		&-name{
+			font-size: 40rpx;
+			color: #fff;
+		}
+
+		&-sex{
+			width: 48rpx;
+			height: 48rpx;
+		}
+
+		&-summary{
+			width: 440rpx;
+			height: 116rpx;
+			font-size: 28rpx;
+			color: #fff;
+			
+			view{
+				width: 400rpx;
+			}
+
+			image{
+				width: 35rpx;
+				height: 35rpx;
+			}
+		}
+	}
+
+	.modal{
+		position: absolute;
+		top: 390rpx;
+		left: 112rpx;
+		width: 530rpx;
+		height: 300rpx;
+		border-radius: 8rpx;
+		background: #fff;
+
+		&-input{
+			position: relative;
+			width: 100%;
+			height: 212rpx;
+
+			input{
+				width: 80%;
+				padding-left: 16rpx;
+				border-bottom: 4rpx solid $blue;
+			}
+
+			&-count{
+				position: absolute;
+				bottom: 15rpx;
+				right: 5%;
+				width: 100%;
+				font-size: 30rpx;
+				font-weight: lighter;
+				color: $grey;
+				text-align: right;
+			}
+		}
+
+		&-btns{
+			width: 100%;
+			height: 90rpx;
+		}
+
+		&-sure{
+			width: 50%;
+			height: 100%;
+			text-align: center;
+			color: #394AE6;
+			font-size: 36rpx;
+			border-top: 2rpx solid #DCDDE6;
+			border-left: 2rpx solid #DCDDE6;
+			padding-top: 20rpx;
+		}
+
+		&-cancel{
+			width: 50%;
+			height: 100%;
+			text-align: center;
+			color: #818399;
+			font-size: 36rpx;
+			border-top: 2rpx solid #DCDDE6;
+			padding-top: 20rpx;
+		}
+	}
+
+	.mask{
+		position: absolute;
+		top: 0;
+		width: 750rpx;
+		background: rgba(0, 0, 0, 0.5);
+		z-index: 10;
+	}
+</style>
+
+<template>
+		<view class="dialog l-row">
+			<image class="dialog-bgimg" src='../static/images/contacts/dialog.png'></image>
+			<view class="dialog-fir-col l-rowVerMid">
+				<view class="dialog-avatar">
+					<image src='{{avatarUrl}}'></image>
+				</view>
+			</view>
+			<view class="dialog-sec-col l-col">
+				<view class="l-row" style='align-items: center;'>
+					<p class="dialog-name">{{nickname}}</p>
+					<image wx:if='{{gender === 1}}' class="dialog-sex" src='../static/images/contacts/man.png'></image>
+					<image wx:if='{{gender === 2}}' class="dialog-sex" src='../static/images/contacts/woman.png'></image>
+				</view>
+
+				<view class="l-row dialog-summary">
+					<view>{{definition}}</view>
+					<image src='../static/images/modify.png' @tap='modifyDefinition'></image>
+				</view>
+			</view>
+		</view>
+
+		<view hidden="{{!showMask}}" class="mask l-rowAllMid" style="height: {{windowHeight}}rpx; display: {{showMask}};">
+			<view class="modal l-col">
+				<view class="modal-input l-colAllMid">
+					<input placeholder="修改个性签名" placeholder-style='color: #818399; font-size: 32rpx;' bindinput='getInputValue' value='{{changeDefinition}}' maxlength='30'/>
+					<view class="modal-input-count">{{changeDefinition.length}}/30</view>
+				</view>
+				<view class="modal-btns l-row">
+					<view class="modal-cancel" @tap='cancelCreate'>取消</view>
+					<view class="modal-sure" @tap='sureCreate'>修改</view>
+				</view>
+			</view>
+		</view>
+</template>
+
+<script>
+	import page from './base/basicPage'
+
+	export default class Visitor extends page {
+		config = {
+			navigationBarTitleText: '我的'
+		}
+
+		data = {
+			windowHeight: '',
+			showMask: false,
+			nickname: '',
+			gender: '',
+			definition: '',
+			avatarUrl: '',
+			// 存储未经验证的个签
+			changeDefinition: ''
+		}
+
+		methods = {
+			modifyDefinition (e) {
+				this.showMask = true;
+			},
+			cancelCreate (e) {
+				this.showMask = false;
+				this.changeDefinition = '';
+			},
+			getInputValue (e) {
+				this.changeDefinition = e.detail.value;
+			},
+			sureCreate (e) {
+				let changeDefinition = this.changeDefinition.trim();
+				this.changeDefinition = '';
+
+				if ((!this.$UTIL.isInputLegal(changeDefinition)) || changeDefinition === '') {
+					this.$WX.toast('这个不可以哦, 再想想吧( ˘•ω•˘ )')
+					this.showMask = false
+					this.$apply();
+					return;
+				} if (changeDefinition.length > 30) {
+					this.$WX.toast('太长了, 再想想吧( ˘•ω•˘ )')		
+					this.showMask = false
+					this.$apply();
+					return;
+				} else {
+					let info = {
+						name: this.$parent.name,
+						gender: this.$parent.gender,
+						definition: changeDefinition,
+						avatarUrl: this.$parent.avatarUrl
+					}
+
+					this.definition = changeDefinition;
+					
+					this.$API('postUserInfo', info, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
+					.then(res => {
+						console.log(res);
+						this.showMask = false
+						this.$apply();
+					})
+				}
+			}
+		}
+
+		onLoad () {
+			console.log('home');
+
+			// 获取用户窗口可用高度
+			this.windowHeight = this.$parent.screenHeight;
+
+			this.showMask = false;
+			
+			// 获取用户信息并显示
+			this.$API('getUserInfo', {}, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
+			.then(res => {
+				console.log(res)
+
+				this.nickname = decodeURI(res.data.name) || this.$parent.nickname;
+				this.gender = res.data.gender || this.$parent.gender;
+				this.definition = res.data.definition || this.$parent.definition || '一个简单的人balabala....';
+				this.avatarUrl = res.data.avatarUrl || this.$parent.avatarUrl;
+
+				this.$apply();
+			})
+		}
+	}
+</script>
+

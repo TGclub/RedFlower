@@ -1,0 +1,192 @@
+<style lang="scss" type="text/scss">
+	@import "../common/styles/variables.scss";
+	@import "../common/styles/common.scss";
+
+	.net{
+		&-container{
+			position: relative;
+			width: 750rpx; 
+			overflow: hidden;
+		}
+		&-userhead{
+			width: 336rpx;
+			height: 336rpx;
+			top: 27.6%;
+			left: 204rpx;
+			transition: opacity 1s;
+
+			view{
+				width: 204rpx;
+				height: 204rpx;
+			}
+		}
+		&-avatar{
+			background: #F5F5F5;
+			border-radius: 50%;
+			transition: opacity 1s;
+			overflow: hidden;
+
+			image{
+				width: 100%;
+				height: 100%;
+			}
+		}
+		&-rings{
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	.btns{
+        position: fixed;
+        bottom: 80rpx;
+		width: 750rpx;
+		justify-content: space-around;
+		flex-wrap: wrap;
+	}
+</style>
+
+<template>
+	<view class="net-container" style="height: {{high}}rpx;">
+		<!-- 用户中心头像显示 -->
+		<view class="l-rowAllMid absolute net-userhead">
+			<image class="absolute net-rings" src='../static/images/contacts/rings.png'></image>
+			<view  class='net-avatar' style='opacity: {{userhead.opacity}};'>
+				<image src='{{userhead.src}}'></image>
+			</view>
+		</view>
+
+		<!-- 人脉网显示 -->
+        <repeat for="{{avaList}}" item="item" index='idx'>
+			<view class='net-avatar absolute' style="width: {{item.size}}rpx; height: {{item.size}}rpx; top: {{item.top}}; left: {{item.left}}rpx; opacity: {{avaListOpacity}}; display: {{avaListShow}};">
+                <image src='{{item.src}}'></image>
+            </view>
+		</repeat>
+	</view>
+	
+	<!-- 跳转按钮部分 -->
+	<view class="l-rowJusMid btns">
+		<joinBtn title="加入人脉圈" @btnClick.user='joinGroup' color='white-border' width='640'></joinBtn>
+	</view>
+</template>
+
+<script>
+	import page from './base/basicPage'
+	import Button from '../components/Button/Button'
+
+	export default class Join extends page {
+		components = {
+			joinBtn: Button
+		}
+
+		data = {
+			options: {},
+			// 幕布高度
+			high: 840,
+			userhead: {
+				src: '',
+				opacity: '1'
+			},
+			// 除用户头像外的其他头像
+			avaListOpacity: '1',
+			avaListShow: 'block',
+			avaList: [
+				{
+                size: '112',
+                top: '23.8%',
+                left: '148'
+				},{
+					size: '112',
+					top: '20%',
+					left: '472'
+				},{
+					size: '112',
+					top: '61.9%',
+					left: '160'
+				},{
+					size: '112',
+					top: '61.9%',
+					left: '480'
+				},{
+					size: '64',
+					top: '12.4%',
+					left: '344'
+				},{
+					size: '64',
+					top: '47.6%',
+					left: '48'
+				},{
+					size: '64',
+					top: '47.6%',
+					left: '642'
+				},{
+					size: '64',
+					top: '85.5%',
+					left: '208'
+				},{
+					size: '64',
+					top: '85.5%',
+					left: '480'
+				}
+			],
+		}
+
+		methods = {
+			joinGroup (e) {
+				let data = {
+					uid: this.$parent.userId,
+					nid: Number(this.options.nid)
+				}
+
+				if (this.$parent.avatarUrl === this.options.ava) {
+					this.$WX.toast('不能自己加入自己的朋友圈噢!')
+					setTimeout(() => {
+						this.$WX.jumpTo('./index');
+					}, 1500);
+				}
+
+				this.$API('inviteFriend', data, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
+				.then(res => {
+					console.log(res)
+					if (res.code === 1) {
+						if(res.message = '该用户已经加入！') {
+							this.$WX.toast('您已经在人脉网中了哦');
+							setTimeout(() => {
+								this.$WX.jumpTo('./index');
+							}, 1500);
+						}
+					}
+					this.$WX.jumpTo('./index');
+				})
+            }
+		}
+
+		onLoad (options) {
+			console.log('join');
+			
+			// 设置幕布高度
+			this.high = this.$parent.screenHeight * 0.75;
+
+			// 设置中心用户头像
+			this.userhead.src = options.ava;
+
+			// 设置options
+			this.options = options;
+
+			this.$API('getNetInfo', {uid: this.$parent.userId}, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
+			.then(res => {
+				console.log(res);
+
+				if (res.data) {
+					for(let i = 0; i < 9; i++) {
+                        this.avaList[i].src = res.data[i].avatarUrl;
+					}
+
+					this.$apply();
+				}
+			})
+
+			this.$apply();
+		}
+	}
+</script>

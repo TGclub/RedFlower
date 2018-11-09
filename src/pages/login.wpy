@@ -1,0 +1,96 @@
+<style lang="scss" type="text/scss">
+	@import "../common/styles/variables.scss";
+    @import "../common/styles/mixins.scss";
+	
+	page{
+		background: #fff;
+	}
+
+	.login{
+		width: 100%;
+		margin-top: -125rpx;
+		margin-bottom: -160rpx; 
+	}
+
+	.btn{
+		position: fixed;
+		bottom: 70rpx;
+		width: 496rpx;
+		height: 88rpx;
+		margin: auto  127rpx;
+		color: #fff;
+		background: $blue;
+		border-radius: 44rpx;
+	}
+</style>
+
+<template>
+	<image class="login" mode='widthFix' src='../static/images/login.png'></image>
+	<button class="btn" open-type="getUserInfo" bindgetuserinfo="GetInfo">授权登录</button>
+</template>
+
+<script>
+	import page from './base/basicPage'
+
+	export default class Login extends page {
+		data = {
+			high: 0,
+			login: {
+				code: ''
+			},
+			options: ''
+		}
+
+		onLoad (options) {
+			// 登录获取code
+			this.$WX.wxLogin()
+			.then(res => {
+				this.login.code = res.code;
+				return this.$API('login', this.login);
+			})
+			.then(res => {
+				// 获取sessionId并存入全局数据中
+				this.$parent.sessionId = res.data;
+			})
+
+			// 存储options
+			this.options = options;
+		}
+
+		GetInfo (e) {
+			let rawData = e.detail.userInfo;
+			let userData = {
+				name: encodeURI(rawData.nickName),
+				gender: rawData.gender,
+				definition: '',
+				avatarUrl: rawData.avatarUrl
+			}
+
+			// 将获取到的用户信息存入全局数据
+			this.$parent.name = rawData.nickName;
+			this.$parent.gender = rawData.gender;
+			this.$parent.definition = '';
+			this.$parent.avatarUrl = rawData.avatarUrl;
+			
+			// 将用户信息传给后台
+			this.$API('postUserInfo', userData, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
+			.then(res => {
+				console.log(res);
+				return this.$API('getUserInfo', {}, {Cookie: 'JSESSIONID=' + this.$parent.sessionId});
+			})
+			.then(res => {
+				console.log(res);
+				// 登录后获取用户id,并存入全局变量
+				this.$parent.userId = res.data.id;
+
+				console.log(JSON.stringify(this.options))
+
+				if (JSON.stringify(this.options) !== '{}') {
+					this.$WX.jumpTo('./join?id=' + this.$parent.userId + '&nid=' + this.options.nid  + '&ava=' + this.options.ava);
+				} else {
+					this.$WX.jumpTo('./index');
+				}
+			})
+		}
+	}
+</script>

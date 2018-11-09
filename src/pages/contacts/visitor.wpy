@@ -27,11 +27,13 @@
 			width: 160rpx;
 			height: 160rpx;
 			border-radius: 50%;
+			overflow: hidden;
 			border: 2rpx solid #fff;
 
 			image{
 				width: 100%;
 				height: 100%;
+				border-radius: 50%;
 			}
 		}
 
@@ -67,12 +69,6 @@
 			font-size: 28rpx;
 			color: #fff;
 		}
-
-		&-wx{
-			color: #fff;
-			font-size: 24rpx;
-			font-weight: lighter;
-		}
 	}
 
 	.net{
@@ -86,7 +82,7 @@
 		&-userhead{
 			width: 336rpx;
 			height: 336rpx;
-			top: 232rpx;
+			top: 27.6%;
 			left: 204rpx;
 			transition: opacity 1s;
 
@@ -99,10 +95,12 @@
 			background: #F5F5F5;
 			border-radius: 50%;
 			transition: opacity 1s;
+			overflow: hidden;
 
 			image{
 				width: 100%;
 				height: 100%;
+				border-radius: 50%;
 			}
 		}
 		&-rings{
@@ -133,17 +131,14 @@
 			</view>
 			<view class="dialog-sec-col l-col">
 				<view class="l-row" style='align-items: center;'>
-					<p class="dialog-name">vultures</p>
-					<image class="dialog-sex" src='../../static/images/contacts/man.png'></image>
+					<p class="dialog-name">{{friend.name}}</p>
+					<image wx:if='{{friend.gender === 1}}' class="dialog-sex" src='../../static/images/contacts/man.png'></image>
+					<image wx:if='{{friend.gender === 2}}' class="dialog-sex" src='../../static/images/contacts/woman.png'></image>
 					<view class="dialog-tag">她与你往来密切</view>
 				</view>
 
 				<view class="dialog-summary">
-					一个简单的人balabala...
-				</view>
-
-				<view class='dialog-wx'>
-					微信号：cnfivnvefnuib_cc
+					{{friend.definition}}
 				</view>
 			</view>
 		</view>
@@ -187,10 +182,16 @@
 
 	export default class Visitor extends page {
 		config = {
-			navigationBarTitleText: 'vultures的人脉圈'
+			navigationBarTitleText: ''
 		}
 
 		data = {
+			friend: {
+				id: '',
+				name: '',
+				gender: '',
+				definition: ''
+			},
 			userhead: {
 				src: '',
 				opacity: '1'
@@ -370,8 +371,44 @@
 			}
 		}
 
-		onLoad () {
-			// console.log('contacts')
+		onLoad (options) {
+			console.log('visitor');
+			
+			this.$API('getFriendInfo', {uid: Number(options.id)}, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
+			.then(res => {
+				console.log(res)
+				this.userhead.src = res.data.avatarUrl;
+
+				this.friend.id = res.data.id;
+				this.friend.name = decodeURI(res.data.name);
+				this.friend.gender = res.data.gender;
+				this.friend.definition = res.data.definition || '一个简单的人balabala....';
+
+				// 设置页面标题
+				this.config.navigationBarTitleText = this.friend.name + '的人脉圈';
+				this.$apply();
+
+				return this.$API('getNetInfo', {uid: Number(options.id)}, {Cookie: 'JSESSIONID=' + this.$parent.sessionId})
+			})
+			.then(res => {
+				console.log(res)
+				if (res.data) {
+					for(let i = 0; i < res.data.length; i++) {
+						if (i < 9) {
+							this.avaList1[i].src = res.data[i].avatarUrl;
+							this.avaList1[i].id = res.data[i].id;
+						} if (i >= 9 && i < 18) {
+							this.avaList2[i].src = res.data[i].avatarUrl;
+							this.avaList2[i].id = res.data[i].id;
+						} if (i >= 18 && i < 27) {
+							this.avaList3[i].src = res.data[i].avatarUrl;
+							this.avaList3[i].id = res.data[i].id;
+						}
+					}
+
+					this.$apply();
+				}
+			})
 		}
 	}
 </script>

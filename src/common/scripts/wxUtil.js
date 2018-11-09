@@ -1,5 +1,6 @@
 // 微信接口
 // 在组件内部保留抽象，方便日后替换掉wx接口模块
+import {appRelevant} from '../../API/config'
 
 /**
  * 调用微信接口(仅在该脚本内部使用)
@@ -46,12 +47,20 @@ const getSystemInfo = () => {
  * @param url {String} 跳转相对路径
  * @return {Promise}
  */
-const tabBarURL = ['./community', './contacts', './home']
+const tabBarURL = ['./community', './index', './home']
 const jumpTo = url => {
     if (url === tabBarURL[0] || url === tabBarURL[1] || url === tabBarURL[2]) {
-        return _configFn(wx.switchTab, {url});
+        _configFn(wx.switchTab, {url});
     } else {
-        return _configFn(wx.navigateTo, {url});
+        _configFn(wx.navigateTo, {url});
+    }
+}
+
+const jumpBack = url => {
+    if (url === tabBarURL[0] || url === tabBarURL[1] || url === tabBarURL[2]) {
+        _configFn(wx.switchTab, {url});
+    } else {
+        _configFn(wx.redirectTo, {url});
     }
 }
 
@@ -76,14 +85,28 @@ const getStorage = (key) => {
     return _configFn(wx.getStorage, {key: key});
 }
 
+const getSetting = (res) => {
+    return _configFn(wx.getSetting, {});
+}
+
+const getAccessToken = () => {
+    return ajax({
+        url: 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' + appRelevant['appid'] + '&secret=' + appRelevant['appsecret'],
+        method: 'GET'
+    })
+}
+
 export {
     ajax, // 发起ajax请求
     wxLogin, // 登录
     wxGetUserInfo, // 获取用户微信信息
     getSystemInfo, // 获取系统信息
     jumpTo, // page跳转
+    jumpBack, // page返回
     toast, // 显示消息提示框
     setStorage, // 设置cookie
     cleanStorage, // 清除cookie
-    getStorage, //获取cookie
+    getStorage, // 获取cookie
+    getSetting, // 获取用户授权信息
+    getAccessToken, // 获取用于生成二维码的Access_token
 }
